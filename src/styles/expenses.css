@@ -1,0 +1,68 @@
+.expenses__search {
+  margin: 16px 0 20px;
+}
+
+.expenses__groups {
+  display: grid;
+  gap: 16px;
+}
+
+.expenses__group {
+  padding: 0;
+  overflow: hidden;
+}
+
+.expenses__group-header {
+  border: none;
+  width: 100%;
+  padding: 18px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.expenses__group-title {
+  font-weight: 700;
+}
+
+.expenses__group-count {
+  color: #94a3b8;
+  font-size: 0.85rem;
+}
+
+.expenses__group-total {
+  font-weight: 700;
+}
+
+.expenses__items {
+  border-top: 1px solid #e2e8f0;
+  padding: 16px 20px;
+  display: grid;
+  gap: 12px;
+}
+
+.expenses__item {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.expenses__item-note {
+  font-weight: 600;
+}
+
+.expenses__item-date {
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+.expenses__item-amount {
+  font-weight: 700;
+}
+
+.expenses__empty {
+  color: #94a3b8;
+}

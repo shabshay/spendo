@@ -1,0 +1,52 @@
+.onboarding h1 {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+}
+
+.onboarding__options {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.onboarding__card {
+  border: none;
+  text-align: left;
+  padding: 18px 20px;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 16px 30px rgba(15, 23, 42, 0.08);
+  cursor: pointer;
+}
+
+.onboarding__card h3 {
+  margin: 0 0 6px;
+}
+
+.onboarding__card p {
+  margin: 0;
+  color: #64748b;
+}
+
+.onboarding__question {
+  color: #64748b;
+  margin-bottom: 16px;
+}
+
+.onboarding__amount {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.onboarding__amount-preview {
+  font-weight: 600;
+  color: #475569;
+}
+
+.onboarding__chips {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
