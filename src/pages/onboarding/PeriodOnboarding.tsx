@@ -15,10 +15,17 @@ const PeriodOnboarding = () => {
   const { settings, saveSettings } = useExpenseService();
   const [selected, setSelected] = useState<Period | null>(settings?.period ?? null);
 
-  const handleSelect = async (period: Period) => {
+  const handleSelect = (period: Period) => {
     setSelected(period);
+  };
+
+  const handleContinue = async () => {
+    if (!selected) {
+      return;
+    }
+
     await saveSettings({
-      period,
+      period: selected,
       amountAgorot: settings?.amountAgorot ?? 0,
       startOfWeek: 0
     });
@@ -45,7 +52,7 @@ const PeriodOnboarding = () => {
       <button
         className="primary-button"
         disabled={!selected}
-        onClick={() => selected && navigate("/onboarding/budget")}
+        onClick={handleContinue}
       >
         Continue
       </button>
