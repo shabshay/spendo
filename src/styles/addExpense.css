@@ -1,0 +1,35 @@
+.add-expense__card {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.add-expense__label {
+  font-weight: 600;
+  color: #475569;
+}
+
+.add-expense__preview {
+  color: #64748b;
+  font-weight: 600;
+}
+
+.add-expense__categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.add-expense__categories button {
+  border: none;
+  background: #f1f5f9;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.add-expense__categories button.active {
+  background: #0f172a;
+  color: #fff;
+}

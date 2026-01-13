@@ -1,0 +1,63 @@
+.reports__range {
+  margin-bottom: 16px;
+}
+
+.reports__custom {
+  color: #64748b;
+  margin-bottom: 16px;
+}
+
+.reports__kpis {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  margin-bottom: 20px;
+}
+
+.reports__kpi {
+  display: grid;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.reports__kpi span {
+  color: #64748b;
+  font-weight: 500;
+}
+
+.reports__chart {
+  margin-bottom: 20px;
+}
+
+.reports__donut {
+  display: grid;
+  gap: 16px;
+}
+
+.reports__legend {
+  display: grid;
+  gap: 10px;
+}
+
+.reports__legend-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.reports__legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.reports__legend-value {
+  font-weight: 700;
+}
+
+.reports__empty {
+  color: #94a3b8;
+  padding: 20px 0;
+}

@@ -1,0 +1,103 @@
+.home__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.home__header h1 {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.home__header p {
+  margin: 4px 0 0;
+  color: #64748b;
+}
+
+.home__settings {
+  font-size: 1.4rem;
+}
+
+.home__countdown {
+  text-align: center;
+  color: #64748b;
+  margin-top: 12px;
+  margin-bottom: 16px;
+}
+
+.home__add {
+  display: block;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.home__tabs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.home__tabs button {
+  border: none;
+  padding: 12px;
+  border-radius: 14px;
+  background: #e2e8f0;
+  color: #475569;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.home__tabs button.active {
+  background: #0f172a;
+  color: #fff;
+}
+
+.home__list {
+  display: grid;
+  gap: 12px;
+}
+
+.home__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.home__item-title {
+  font-weight: 600;
+}
+
+.home__item-sub {
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.home__item-amount {
+  font-weight: 700;
+}
+
+.home__empty {
+  color: #94a3b8;
+}
+
+.home__link {
+  margin-top: 12px;
+  display: inline-flex;
+  color: #2563eb;
+  font-weight: 600;
+}
+
+.home__summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.home__summary-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-top: 8px;
+}

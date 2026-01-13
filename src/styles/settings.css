@@ -1,0 +1,19 @@
+.settings__card {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.settings__label {
+  color: #64748b;
+  font-weight: 600;
+}
+
+.settings__value {
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.settings__reset {
+  width: 100%;
+}
