@@ -32,9 +32,9 @@ const Home = () => {
 
   useEffect(() => {
     const ratio = settings.amountAgorot > 0 ? spentInPeriod / settings.amountAgorot : 0;
-    if (ratio >= 1 && lastAlert !== "error") {
-      setToasts((prev) => [
-        ...prev,
+    if (ratio >= 1) {
+      if (lastAlert === "error") return;
+      setToasts([
         {
           id: `error-${Date.now()}`,
           type: "error",
@@ -42,9 +42,11 @@ const Home = () => {
         }
       ]);
       setLastAlert("error");
-    } else if (ratio >= 0.8 && lastAlert !== "warning") {
-      setToasts((prev) => [
-        ...prev,
+      return;
+    }
+    if (ratio >= 0.8) {
+      if (lastAlert === "warning") return;
+      setToasts([
         {
           id: `warn-${Date.now()}`,
           type: "warning",
@@ -52,6 +54,11 @@ const Home = () => {
         }
       ]);
       setLastAlert("warning");
+      return;
+    }
+    if (lastAlert !== null) {
+      setLastAlert(null);
+      setToasts([]);
     }
   }, [spentInPeriod, settings.amountAgorot, leftInPeriod, lastAlert]);
 
