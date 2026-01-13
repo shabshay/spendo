@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spendo</title>
+    <script type="text/javascript">
+      const { location } = window;
+      const repoBase = "/spendo";
+      const path = location.pathname
+        .replace(repoBase, "")
+        .replace(/^\//, "");
+      const search = location.search ? `&${location.search.slice(1)}` : "";
+      const redirect = `${repoBase}/?/${path}${search}${location.hash}`
+        .replace(/&/g, "~and~")
+        .replace(/\/$/, "");
+      location.replace(redirect);
+    </script>
+  </head>
+  <body></body>
+</html>
