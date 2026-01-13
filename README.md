@@ -15,6 +15,18 @@ npm run dev
 npm run test
 ```
 
+## Deploy to GitHub Pages
+
+1. In GitHub, go to **Settings → Pages** and set **Source** to **GitHub Actions**.
+2. Push to `main` (or run the workflow manually) to deploy.
+
+**Expected URLs**
+- App root: `https://shabshay.github.io/spendo/`
+- Reports route: `https://shabshay.github.io/spendo/#/reports`
+
+**Router choice**
+- This project uses `HashRouter` for GitHub Pages compatibility. The hash-based URL keeps client-side routing working without server-side fallbacks, so deep links and refreshes do not 404 on GitHub Pages.
+
 ## Architecture decisions
 
 - **Service interface**: `IExpenseService` lives in `src/services/expenseService.ts`. The UI consumes it through `ExpenseServiceContext` so we can swap in an `ApiExpenseService` later with minimal changes.
