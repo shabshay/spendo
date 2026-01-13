@@ -4,6 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Spendo</title>
+    <script type="text/javascript">
+      (function (location) {
+        if (location.search.startsWith("?/")) {
+          const decodedPath = location.search
+            .slice(2)
+            .split("&")
+            .map((segment) => segment.replace(/~and~/g, "&"))
+            .join("?");
+          window.history.replaceState(
+            null,
+            "",
+            location.pathname + decodedPath + location.hash
+          );
+        }
+      })(window.location);
+    </script>
   </head>
   <body>
     <div id="root"></div>

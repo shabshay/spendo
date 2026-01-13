@@ -22,10 +22,19 @@ npm run test
 
 **Expected URLs**
 - App root: `https://shabshay.github.io/spendo/`
-- Reports route: `https://shabshay.github.io/spendo/#/reports`
+- Reports route: `https://shabshay.github.io/spendo/reports`
 
-**Router choice**
-- This project uses `HashRouter` for GitHub Pages compatibility. The hash-based URL keeps client-side routing working without server-side fallbacks, so deep links and refreshes do not 404 on GitHub Pages.
+**GitHub Pages SPA routing**
+- Vite sets `base` to `/spendo/` so assets resolve correctly in the subpath.
+- The app uses `BrowserRouter` with `basename={import.meta.env.BASE_URL}`.
+- `public/404.html` redirects unknown routes back to `/spendo/` while preserving the original path/query.
+- `index.html` restores the redirected path via the History API so deep links keep clean URLs.
+
+**Local build**
+```bash
+npm run build
+npm run preview
+```
 
 ## Architecture decisions
 
