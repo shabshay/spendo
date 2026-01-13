@@ -39,8 +39,9 @@ const PeriodOnboarding = () => {
         {PERIOD_OPTIONS.map((option) => (
           <button
             key={option.value}
-            className="onboarding__card"
+            className={`onboarding__card${selected === option.value ? " onboarding__card--selected" : ""}`}
             onClick={() => handleSelect(option.value)}
+            aria-pressed={selected === option.value}
           >
             <div>
               <h3>{option.label}</h3>
