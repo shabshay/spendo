@@ -13,8 +13,6 @@ import { formatILS } from "../utils/money";
 import { useMotionPreference } from "../utils/animation";
 import "../styles/home.css";
 
-const MotionLink = motion(Link);
-
 const Home = () => {
   const {
     settings,
@@ -154,15 +152,14 @@ const Home = () => {
 
       <div className="home__countdown">Resets in {countdown}</div>
 
-      <MotionLink
+      <Link
         to="/add"
         className="primary-button home__add"
         state={{ returnFocusId: "add-expense-trigger" }}
         id="add-expense-trigger"
-        whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
       >
         + Add expense
-      </MotionLink>
+      </Link>
 
       <div className="home__tabs">
         <MotionButton
