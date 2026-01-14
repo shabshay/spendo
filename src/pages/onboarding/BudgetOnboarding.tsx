@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import MotionButton from "../../components/MotionButton";
+import OnboardingSteps from "../../components/OnboardingSteps";
 import { useExpenseService } from "../../services/ExpenseServiceContext";
 import { formatILS, parseILS } from "../../utils/money";
 import type { Period } from "../../types";
@@ -44,6 +46,7 @@ const BudgetOnboarding = () => {
 
   return (
     <div className="app-shell onboarding">
+      <OnboardingSteps currentStep={2} totalSteps={2} />
       <h1>Set your budget</h1>
       <p className="onboarding__question">{periodQuestion[period]}</p>
       <div className="onboarding__amount">
@@ -60,22 +63,22 @@ const BudgetOnboarding = () => {
       </div>
       <div className="onboarding__chips">
         {QUICK_AMOUNTS.map((amount) => (
-          <button
+          <MotionButton
             key={amount}
             className="ghost-button"
             onClick={() => handleQuickPick(amount)}
           >
             ₪{amount}
-          </button>
+          </MotionButton>
         ))}
       </div>
-      <button
+      <MotionButton
         className="primary-button"
         disabled={amountAgorot <= 0}
         onClick={handleSubmit}
       >
         Get started
-      </button>
+      </MotionButton>
     </div>
   );
 };

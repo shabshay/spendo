@@ -20,7 +20,7 @@
   justify-content: space-between;
   align-items: center;
   background: transparent;
-  text-align: left;
+  text-align: start;
   cursor: pointer;
 }
 
@@ -61,6 +61,20 @@
 
 .expenses__item-amount {
   font-weight: 700;
+}
+
+.expenses__item-meta {
+  display: grid;
+  gap: 8px;
+  justify-items: end;
+  text-align: end;
+}
+
+.expenses__item-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .expenses__empty {

@@ -1,0 +1,77 @@
+.expense-sheet__overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.35);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 20px;
+  z-index: 40;
+}
+
+.expense-sheet {
+  width: min(520px, 100%);
+  border-radius: 24px 24px 18px 18px;
+  background: #f8fafc;
+  padding: 20px 18px 24px;
+  display: grid;
+  gap: 16px;
+  box-shadow: 0 24px 48px rgba(15, 23, 42, 0.22);
+  max-height: min(90vh, 720px);
+  overflow: auto;
+}
+
+.expense-sheet__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.expense-sheet__header h2 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.expense-sheet__card {
+  display: grid;
+  gap: 16px;
+}
+
+.expense-sheet__label {
+  font-weight: 600;
+  color: #475569;
+}
+
+.expense-sheet__preview {
+  color: #64748b;
+  font-weight: 600;
+}
+
+.expense-sheet__categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.expense-sheet__categories button {
+  border: none;
+  background: #f1f5f9;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.expense-sheet__categories button.active {
+  background: #0f172a;
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .expense-sheet__categories button {
+    transition: background 0.01ms linear, color 0.01ms linear, box-shadow 0.01ms linear;
+  }
+}

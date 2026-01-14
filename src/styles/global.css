@@ -71,6 +71,17 @@ button {
   cursor: pointer;
 }
 
+.ghost-button--small {
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+}
+
+.ghost-button--danger {
+  border-color: #fecaca;
+  color: #b91c1c;
+}
+
 .page-header {
   display: flex;
   align-items: center;
@@ -96,6 +107,7 @@ button {
   padding: 12px 14px;
   font-size: 1rem;
   background: #fff;
+  text-align: start;
 }
 
 .segmented {
@@ -133,11 +145,12 @@ button {
 
 .toast-stack {
   position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
+  inset-inline: 0;
+  bottom: 20px;
   display: grid;
   gap: 10px;
+  justify-items: center;
+  padding-inline: 16px;
   z-index: 50;
 }
 
@@ -147,6 +160,10 @@ button {
   color: #fff;
   font-weight: 600;
   box-shadow: 0 12px 20px rgba(15, 23, 42, 0.18);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  max-width: min(520px, 100%);
 }
 
 .toast.warning {
@@ -155,6 +172,31 @@ button {
 
 .toast.error {
   background: #ef4444;
+}
+
+.toast.info {
+  background: #0f172a;
+}
+
+.toast__action {
+  border: none;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 @media (max-width: 480px) {

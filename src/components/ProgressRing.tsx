@@ -1,5 +1,7 @@
 import type { CSSProperties } from "react";
+import { motion } from "motion/react";
 import { formatILS } from "../utils/money";
+import { useMotionPreference } from "../utils/animation";
 import "../styles/progressRing.css";
 
 interface ProgressRingProps {
@@ -9,6 +11,7 @@ interface ProgressRingProps {
 }
 
 const ProgressRing = ({ spentAgorot, budgetAgorot, periodLabel }: ProgressRingProps) => {
+  const { slowTransition, shouldReduceMotion } = useMotionPreference();
   const radius = 86;
   const circumference = 2 * Math.PI * radius;
   const ratio = budgetAgorot > 0 ? Math.min(spentAgorot / budgetAgorot, 1) : 0;
@@ -32,13 +35,16 @@ const ProgressRing = ({ spentAgorot, budgetAgorot, periodLabel }: ProgressRingPr
             r={radius}
             strokeWidth="18"
           />
-          <circle
+          <motion.circle
             className="progress-ring__value"
             cx="110"
             cy="110"
             r={radius}
             strokeWidth="18"
             style={ringStyle}
+            animate={{ strokeDashoffset }}
+            initial={false}
+            transition={shouldReduceMotion ? { duration: 0 } : slowTransition}
           />
         </svg>
         <div className="progress-ring__label">

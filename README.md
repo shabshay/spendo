@@ -43,6 +43,12 @@ npm run preview
 - **Money utilities**: ILS formatting and parsing lives in `src/utils/money.ts` and stores amounts in integer agorot to avoid floating point drift.
 - **UI**: CSS (global + page-specific) keeps the UI clean and minimal without extra tooling.
 
+## Animations & Accessibility
+
+- Subtle UI motion is provided by Motion for React and centralized in `src/utils/animation.ts`.
+- `prefers-reduced-motion` is respected via `MotionConfig reducedMotion=\"user\"` and short CSS fallbacks in `src/styles/global.css`.
+- Modal sheets trap focus, focus the first input on open, and restore focus on close for keyboard users.
+
 ## Swapping to ApiExpenseService
 
 1. Create `ApiExpenseService` implementing `IExpenseService` in `src/services/expenseService.ts` (or a new file).
