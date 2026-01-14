@@ -16,7 +16,6 @@ const AddExpense = () => {
       category: expense.category,
       note: expense.note
     });
-    navigate("/", { state: { restoreFocusId: returnFocusId } });
   };
 
   return (
