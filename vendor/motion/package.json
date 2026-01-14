@@ -1,0 +1,12 @@
+{
+  "name": "motion",
+  "version": "11.11.17",
+  "type": "module",
+  "main": "./react.js",
+  "exports": {
+    "./react": "./react.js"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0"
+  }
+}

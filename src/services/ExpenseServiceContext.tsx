@@ -6,9 +6,15 @@ interface ExpenseContextValue {
   settings: BudgetSettings | null;
   expenses: Expense[];
   isLoading: boolean;
+  storageWarning: string | null;
   saveSettings: (settings: BudgetSettings) => Promise<void>;
   addExpense: (expense: Omit<Expense, "id" | "createdAt">) => Promise<void>;
-  deleteExpense: (id: string) => Promise<void>;
+  updateExpense: (
+    id: string,
+    updates: Omit<Expense, "id" | "createdAt">
+  ) => Promise<Expense | null>;
+  deleteExpense: (id: string) => Promise<Expense | null>;
+  restoreExpense: (expense: Expense) => Promise<void>;
   clearAll: () => Promise<void>;
   refresh: () => Promise<void>;
 }
@@ -24,15 +30,15 @@ export const ExpenseServiceProvider: React.FC<React.PropsWithChildren> = ({
   const [settings, setSettings] = useState<BudgetSettings | null>(null);
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [storageWarning, setStorageWarning] = useState<string | null>(null);
 
   const refresh = async () => {
     setIsLoading(true);
-    const [storedSettings, storedExpenses] = await Promise.all([
-      service.getSettings(),
-      service.listExpenses()
-    ]);
+    const { settings: storedSettings, expenses: storedExpenses, warning } =
+      await service.load();
     setSettings(storedSettings);
     setExpenses(storedExpenses);
+    setStorageWarning(warning ?? null);
     setIsLoading(false);
   };
 
@@ -50,9 +56,36 @@ export const ExpenseServiceProvider: React.FC<React.PropsWithChildren> = ({
     setExpenses((prev) => [created, ...prev]);
   };
 
+  const updateExpense = async (
+    id: string,
+    updates: Omit<Expense, "id" | "createdAt">
+  ) => {
+    const updated = await service.updateExpense(id, updates);
+    if (updated) {
+      setExpenses((prev) =>
+        prev.map((expense) => (expense.id === id ? updated : expense))
+      );
+    }
+    return updated;
+  };
+
   const deleteExpense = async (id: string) => {
-    await service.deleteExpense(id);
-    setExpenses((prev) => prev.filter((item) => item.id !== id));
+    const deleted = await service.deleteExpense(id);
+    if (deleted) {
+      setExpenses((prev) => prev.filter((item) => item.id !== id));
+    }
+    return deleted;
+  };
+
+  const restoreExpense = async (expense: Expense) => {
+    await service.restoreExpense(expense);
+    setExpenses((prev) => {
+      const exists = prev.some((item) => item.id === expense.id);
+      if (exists) return prev;
+      return [expense, ...prev].sort(
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+    });
   };
 
   const clearAll = async () => {
@@ -65,9 +98,12 @@ export const ExpenseServiceProvider: React.FC<React.PropsWithChildren> = ({
     settings,
     expenses,
     isLoading,
+    storageWarning,
     saveSettings,
     addExpense,
+    updateExpense,
     deleteExpense,
+    restoreExpense,
     clearAll,
     refresh
   };

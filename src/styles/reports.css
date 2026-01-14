@@ -3,8 +3,15 @@
 }
 
 .reports__custom {
+  display: grid;
+  gap: 10px;
   color: #64748b;
   margin-bottom: 16px;
+}
+
+.reports__label {
+  font-weight: 600;
+  color: #475569;
 }
 
 .reports__kpis {

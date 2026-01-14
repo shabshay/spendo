@@ -1,3 +1,21 @@
+.onboarding__steps {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.onboarding__step {
+  height: 6px;
+  flex: 1;
+  background: #e2e8f0;
+  border-radius: 999px;
+  transform-origin: center;
+}
+
+.onboarding__step--active {
+  background: #0f172a;
+}
+
 .onboarding h1 {
   font-size: 1.8rem;
   margin-bottom: 20px;
@@ -11,7 +29,7 @@
 
 .onboarding__card {
   border: none;
-  text-align: left;
+  text-align: start;
   padding: 18px 20px;
   border-radius: 18px;
   background: #fff;

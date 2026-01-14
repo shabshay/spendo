@@ -16,6 +16,9 @@ import { getPeriodWindow } from "../domain/period";
 import { useExpenseService } from "../services/ExpenseServiceContext";
 import type { Category } from "../types";
 import { formatILS } from "../utils/money";
+import { useCountUp } from "../utils/useCountUp";
+import { useMotionPreference } from "../utils/animation";
+import MotionButton from "../components/MotionButton";
 import "../styles/reports.css";
 
 const RANGE_OPTIONS = [
@@ -27,15 +30,30 @@ const RANGE_OPTIONS = [
 
 type RangeKey = (typeof RANGE_OPTIONS)[number]["key"];
 
-const getRangeWindow = (now: Date, range: RangeKey, startOfWeek = 0) => {
+const formatInputDate = (date: Date) => date.toLocaleDateString("en-CA");
+
+const parseInputDate = (value: string) => {
+  const [year, month, day] = value.split("-").map(Number);
+  const parsed = new Date(year, month - 1, day);
+  return Number.isNaN(parsed.getTime()) ? new Date() : parsed;
+};
+
+const getRangeWindow = (
+  now: Date,
+  range: RangeKey,
+  startOfWeek = 0,
+  custom?: { start: string; end: string }
+) => {
   if (range === "today") return getPeriodWindow(now, "daily", startOfWeek);
   if (range === "week") return getPeriodWindow(now, "weekly", startOfWeek);
   if (range === "month") return getPeriodWindow(now, "monthly", startOfWeek);
-  const start = new Date(now);
-  start.setDate(start.getDate() - 6);
-  const end = new Date(now);
-  end.setDate(end.getDate() + 1);
-  return { start, end };
+  const startDate = custom ? parseInputDate(custom.start) : now;
+  const endDate = custom ? parseInputDate(custom.end) : now;
+  const start = startDate <= endDate ? startDate : endDate;
+  const end = startDate <= endDate ? endDate : startDate;
+  const exclusiveEnd = new Date(end);
+  exclusiveEnd.setDate(exclusiveEnd.getDate() + 1);
+  return { start, end: exclusiveEnd };
 };
 
 const buildDateBuckets = (start: Date, end: Date) => {
@@ -51,10 +69,21 @@ const buildDateBuckets = (start: Date, end: Date) => {
 const Reports = () => {
   const { expenses, settings } = useExpenseService();
   const [range, setRange] = useState<RangeKey>("month");
+  const today = new Date();
+  const [customStart, setCustomStart] = useState(() => {
+    const date = new Date(today);
+    date.setDate(date.getDate() - 6);
+    return formatInputDate(date);
+  });
+  const [customEnd, setCustomEnd] = useState(() => formatInputDate(today));
+  const { shouldReduceMotion } = useMotionPreference();
 
   if (!settings) return null;
 
-  const { start, end } = getRangeWindow(new Date(), range, settings.startOfWeek);
+  const { start, end } = getRangeWindow(today, range, settings.startOfWeek, {
+    start: customStart,
+    end: customEnd
+  });
 
   const rangeExpenses = useMemo(() => {
     return expenses.filter((expense) => {
@@ -63,12 +92,21 @@ const Reports = () => {
     });
   }, [expenses, start, end]);
 
-  const totalSpent = rangeExpenses.reduce((sum, expense) => sum + expense.amountAgorot, 0);
-  const daysInRange = Math.max(1, Math.ceil((end.getTime() - start.getTime()) / 86400000));
-  const averagePerDay = totalSpent / daysInRange;
+  const totalSpentAgorot = rangeExpenses.reduce(
+    (sum, expense) => sum + expense.amountAgorot,
+    0
+  );
+  const daysInRange = Math.max(
+    1,
+    Math.ceil((end.getTime() - start.getTime()) / 86400000)
+  );
+  const averagePerDayAgorot = totalSpentAgorot / daysInRange;
 
   const dailyTotals = buildDateBuckets(start, end).map((date) => {
-    const label = date.toLocaleDateString("en-IL", { month: "short", day: "numeric" });
+    const label = date.toLocaleDateString("en-IL", {
+      month: "short",
+      day: "numeric"
+    });
     const dayStart = new Date(date);
     const dayEnd = new Date(date);
     dayEnd.setDate(dayEnd.getDate() + 1);
@@ -78,10 +116,13 @@ const Reports = () => {
         return created >= dayStart.getTime() && created < dayEnd.getTime();
       })
       .reduce((sum, expense) => sum + expense.amountAgorot, 0);
-    return { label, total: total / 100 };
+    return { label, totalAgorot: total, total: total / 100 };
   });
 
-  const highestDay = dailyTotals.reduce((max, entry) => Math.max(max, entry.total), 0);
+  const highestDayAgorot = dailyTotals.reduce(
+    (max, entry) => Math.max(max, entry.totalAgorot),
+    0
+  );
 
   const categoryTotals = CATEGORY_OPTIONS.map((category) => {
     const total = rangeExpenses
@@ -101,6 +142,10 @@ const Reports = () => {
     category: entry.category
   }));
 
+  const totalSpentDisplay = useCountUp(totalSpentAgorot);
+  const averageDisplay = useCountUp(Math.round(averagePerDayAgorot));
+  const highestDisplay = useCountUp(highestDayAgorot);
+
   return (
     <div className="app-shell reports">
       <header className="page-header">
@@ -112,38 +157,59 @@ const Reports = () => {
 
       <div className="segmented reports__range">
         {RANGE_OPTIONS.map((option) => (
-          <button
+          <MotionButton
             key={option.key}
             className={range === option.key ? "active" : ""}
             onClick={() => setRange(option.key)}
           >
             {option.label}
-          </button>
+          </MotionButton>
         ))}
       </div>
 
       {range === "custom" && (
         <div className="card reports__custom">
-          Custom range is set to the last 7 days for now.
+          <label className="reports__label" htmlFor="reports-start">
+            Start date
+          </label>
+          <input
+            id="reports-start"
+            className="input-field"
+            type="date"
+            value={customStart}
+            onChange={(event) => setCustomStart(event.target.value)}
+          />
+          <label className="reports__label" htmlFor="reports-end">
+            End date
+          </label>
+          <input
+            id="reports-end"
+            className="input-field"
+            type="date"
+            value={customEnd}
+            onChange={(event) => setCustomEnd(event.target.value)}
+          />
         </div>
       )}
 
       <div className="reports__kpis">
         <div className="card reports__kpi">
           <span>Total spent</span>
-          <strong>{formatILS(totalSpent)}</strong>
+          <strong>{formatILS(Math.round(totalSpentDisplay))}</strong>
         </div>
         <div className="card reports__kpi">
           <span>Average per day</span>
-          <strong>{formatILS(Math.round(averagePerDay))}</strong>
+          <strong>{formatILS(Math.round(averageDisplay))}</strong>
         </div>
         <div className="card reports__kpi">
           <span>Highest day</span>
-          <strong>₪{highestDay.toFixed(0)}</strong>
+          <strong>{formatILS(Math.round(highestDisplay))}</strong>
         </div>
         <div className="card reports__kpi">
           <span>Top category</span>
-          <strong>{topCategory.category ? CATEGORY_LABELS[topCategory.category] : "—"}</strong>
+          <strong>
+            {topCategory.category ? CATEGORY_LABELS[topCategory.category] : "—"}
+          </strong>
         </div>
       </div>
 
@@ -154,7 +220,14 @@ const Reports = () => {
             <XAxis dataKey="label" />
             <YAxis />
             <Tooltip formatter={(value: number) => `₪${value}`} />
-            <Line type="monotone" dataKey="total" stroke="#0f172a" strokeWidth={3} />
+            <Line
+              type="monotone"
+              dataKey="total"
+              stroke="#0f172a"
+              strokeWidth={3}
+              isAnimationActive={!shouldReduceMotion}
+              animationDuration={320}
+            />
           </LineChart>
         </ResponsiveContainer>
       </div>
@@ -167,7 +240,15 @@ const Reports = () => {
           <div className="reports__donut">
             <ResponsiveContainer width="100%" height={240}>
               <PieChart>
-                <Pie data={donutData} dataKey="value" nameKey="name" innerRadius={60} outerRadius={90}>
+                <Pie
+                  data={donutData}
+                  dataKey="value"
+                  nameKey="name"
+                  innerRadius={60}
+                  outerRadius={90}
+                  isAnimationActive={!shouldReduceMotion}
+                  animationDuration={320}
+                >
                   {donutData.map((entry) => (
                     <Cell key={entry.name} fill={CATEGORY_COLORS[entry.category]} />
                   ))}

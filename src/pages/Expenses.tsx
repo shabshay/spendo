@@ -1,10 +1,15 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { AnimatePresence, motion } from "motion/react";
 import { CATEGORY_LABELS, CATEGORY_OPTIONS } from "../constants/categories";
 import { getPeriodWindow } from "../domain/period";
 import { useExpenseService } from "../services/ExpenseServiceContext";
 import type { Category, Expense } from "../types";
 import { formatILS } from "../utils/money";
+import ExpenseSheet from "../components/ExpenseSheet";
+import ToastStack, { type ToastMessage } from "../components/ToastStack";
+import MotionButton from "../components/MotionButton";
+import { useMotionPreference } from "../utils/animation";
 import "../styles/expenses.css";
 
 const RANGE_OPTIONS = [
@@ -35,10 +40,20 @@ const groupByCategory = (items: Expense[]) => {
 };
 
 const Expenses = () => {
-  const { expenses, settings } = useExpenseService();
+  const {
+    expenses,
+    settings,
+    deleteExpense,
+    restoreExpense,
+    updateExpense
+  } = useExpenseService();
   const [range, setRange] = useState<RangeKey>("today");
   const [search, setSearch] = useState("");
   const [expanded, setExpanded] = useState<Set<Category>>(new Set());
+  const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
+  const [returnFocusEl, setReturnFocusEl] = useState<HTMLElement | null>(null);
+  const [toasts, setToasts] = useState<ToastMessage[]>([]);
+  const { shouldReduceMotion } = useMotionPreference();
 
   if (!settings) return null;
 
@@ -72,8 +87,48 @@ const Expenses = () => {
     });
   };
 
+  const handleDismiss = (id: string) => {
+    setToasts((prev) => prev.filter((toast) => toast.id !== id));
+  };
+
+  const handleDelete = async (expense: Expense) => {
+    const deleted = await deleteExpense(expense.id);
+    if (!deleted) return;
+    const toastId = `undo-${Date.now()}`;
+    setToasts((prev) => [
+      ...prev,
+      {
+        id: toastId,
+        type: "info",
+        message: "Expense deleted.",
+        actionLabel: "Undo",
+        durationMs: 5000,
+        onAction: () => {
+          void restoreExpense(deleted);
+          handleDismiss(toastId);
+        }
+      }
+    ]);
+  };
+
+  const handleEditSubmit = async (expense: Omit<Expense, "id" | "createdAt">) => {
+    if (!editingExpense) return;
+    await updateExpense(editingExpense.id, expense);
+    setEditingExpense(null);
+  };
+
+  const itemOffset = shouldReduceMotion ? 0 : 8;
+  const expandMotion = shouldReduceMotion
+    ? { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 } }
+    : {
+        initial: { opacity: 0, scaleY: 0.98 },
+        animate: { opacity: 1, scaleY: 1 },
+        exit: { opacity: 0, scaleY: 0.98 }
+      };
+
   return (
     <div className="app-shell expenses">
+      <ToastStack toasts={toasts} onDismiss={handleDismiss} />
       <header className="page-header">
         <Link to="/" className="ghost-button">
           Back
@@ -83,13 +138,13 @@ const Expenses = () => {
 
       <div className="segmented">
         {RANGE_OPTIONS.map((option) => (
-          <button
+          <MotionButton
             key={option.key}
             className={range === option.key ? "active" : ""}
             onClick={() => setRange(option.key)}
           >
             {option.label}
-          </button>
+          </MotionButton>
         ))}
       </div>
 
@@ -105,10 +160,16 @@ const Expenses = () => {
           <div className="card expenses__empty">No expenses found.</div>
         ) : (
           grouped.map((group) => (
-            <div key={group.category} className="card expenses__group">
-              <button
+            <motion.div
+              key={group.category}
+              className="card expenses__group"
+              layout={!shouldReduceMotion}
+            >
+              <MotionButton
                 className="expenses__group-header"
                 onClick={() => toggleExpand(group.category)}
+                aria-expanded={expanded.has(group.category)}
+                aria-controls={`expenses-group-${group.category}`}
               >
                 <div>
                   <div className="expenses__group-title">
@@ -121,30 +182,77 @@ const Expenses = () => {
                 <div className="expenses__group-total">
                   {formatILS(group.total)}
                 </div>
-              </button>
-              {expanded.has(group.category) && (
-                <div className="expenses__items">
-                  {group.group.map((expense) => (
-                    <div key={expense.id} className="expenses__item">
-                      <div>
-                        <div className="expenses__item-note">
-                          {expense.note || "No note"}
-                        </div>
-                        <div className="expenses__item-date">
-                          {new Date(expense.createdAt).toLocaleString()}
-                        </div>
-                      </div>
-                      <div className="expenses__item-amount">
-                        {formatILS(expense.amountAgorot)}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+              </MotionButton>
+              <AnimatePresence initial={false}>
+                {expanded.has(group.category) && (
+                  <motion.div
+                    className="expenses__items"
+                    id={`expenses-group-${group.category}`}
+                    initial={expandMotion.initial}
+                    animate={expandMotion.animate}
+                    exit={expandMotion.exit}
+                    style={{ originY: 0 }}
+                  >
+                    <AnimatePresence mode="popLayout">
+                      {group.group.map((expense) => (
+                        <motion.div
+                          key={expense.id}
+                          className="expenses__item"
+                          layout={!shouldReduceMotion}
+                          initial={{ opacity: 0, y: itemOffset }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: itemOffset }}
+                        >
+                          <div>
+                            <div className="expenses__item-note">
+                              {expense.note || "No note"}
+                            </div>
+                            <div className="expenses__item-date">
+                              {new Date(expense.createdAt).toLocaleString()}
+                            </div>
+                          </div>
+                          <div className="expenses__item-meta">
+                            <div className="expenses__item-amount">
+                              {formatILS(expense.amountAgorot)}
+                            </div>
+                            <div className="expenses__item-actions">
+                              <MotionButton
+                                className="ghost-button ghost-button--small"
+                                onClick={(event) => {
+                                  setReturnFocusEl(event.currentTarget);
+                                  setEditingExpense(expense);
+                                }}
+                              >
+                                Edit
+                              </MotionButton>
+                              <MotionButton
+                                className="ghost-button ghost-button--small ghost-button--danger"
+                                onClick={() => handleDelete(expense)}
+                              >
+                                Delete
+                              </MotionButton>
+                            </div>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </AnimatePresence>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
           ))
         )}
       </div>
+
+      <ExpenseSheet
+        open={Boolean(editingExpense)}
+        title="Edit expense"
+        submitLabel="Save changes"
+        initialExpense={editingExpense}
+        onClose={() => setEditingExpense(null)}
+        onSubmit={handleEditSubmit}
+        returnFocusEl={returnFocusEl}
+      />
     </div>
   );
 };

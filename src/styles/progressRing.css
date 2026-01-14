@@ -22,7 +22,6 @@
   stroke: #0f172a;
   transform: rotate(-90deg);
   transform-origin: 110px 110px;
-  transition: stroke-dashoffset 0.4s ease;
 }
 
 .progress-ring__label {
