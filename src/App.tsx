@@ -22,81 +22,32 @@ const App = () => {
 
   return (
     <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
-        <Route
-          path="/"
-          element={
-            hasSettings ? (
-              <PageTransition>
-                <Home />
-              </PageTransition>
-            ) : (
-              <Navigate to="/onboarding/period" />
-            )
-          }
-        />
-        <Route
-          path="/onboarding/period"
-          element={
-            <PageTransition>
-              <PeriodOnboarding />
-            </PageTransition>
-          }
-        />
-        <Route
-          path="/onboarding/budget"
-          element={
-            <PageTransition>
-              <BudgetOnboarding />
-            </PageTransition>
-          }
-        />
-        <Route
-          path="/add"
-          element={
-            hasSettings ? (
-              <PageTransition>
-                <AddExpense />
-              </PageTransition>
-            ) : (
-              <Navigate to="/" />
-            )
-          }
-        />
-        <Route
-          path="/expenses"
-          element={
-            hasSettings ? (
-              <PageTransition>
-                <Expenses />
-              </PageTransition>
-            ) : (
-              <Navigate to="/" />
-            )
-          }
-        />
-        <Route
-          path="/reports"
-          element={
-            hasSettings ? (
-              <PageTransition>
-                <Reports />
-              </PageTransition>
-            ) : (
-              <Navigate to="/" />
-            )
-          }
-        />
-        <Route
-          path="/settings"
-          element={
-            <PageTransition>
-              <Settings />
-            </PageTransition>
-          }
-        />
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
+      <PageTransition key={location.pathname}>
+        <Routes location={location}>
+          <Route
+            path="/"
+            element={
+              hasSettings ? <Home /> : <Navigate to="/onboarding/period" />
+            }
+          />
+          <Route path="/onboarding/period" element={<PeriodOnboarding />} />
+          <Route path="/onboarding/budget" element={<BudgetOnboarding />} />
+          <Route
+            path="/add"
+            element={hasSettings ? <AddExpense /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/expenses"
+            element={hasSettings ? <Expenses /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/reports"
+            element={hasSettings ? <Reports /> : <Navigate to="/" />}
+          />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </PageTransition>
     </AnimatePresence>
   );
 };
