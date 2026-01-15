@@ -1,7 +1,7 @@
 .progress-ring {
   display: grid;
   place-items: center;
-  padding: 26px;
+  padding: 28px;
 }
 
 .progress-ring__chart {
@@ -14,12 +14,12 @@
 
 .progress-ring__bg {
   fill: none;
-  stroke: #e2e8f0;
+  stroke: rgba(148, 163, 184, 0.3);
 }
 
 .progress-ring__value {
   fill: none;
-  stroke: #0f172a;
+  stroke: url("#progress-ring-gradient");
   transform: rotate(-90deg);
   transform-origin: 110px 110px;
 }
@@ -32,11 +32,12 @@
 }
 
 .progress-ring__amount {
-  font-size: 1.8rem;
+  font-size: 1.9rem;
   font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .progress-ring__sub {
-  color: #64748b;
+  color: var(--ink-muted);
   font-weight: 500;
 }

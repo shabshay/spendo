@@ -70,7 +70,7 @@ const ExpenseSheet = ({
       <div className="expense-sheet__header">
         <h2>{title}</h2>
         <MotionButton
-          className="ghost-button"
+          className="ghost-button expense-sheet__close"
           onClick={onClose}
           aria-label="Close"
           type="button"

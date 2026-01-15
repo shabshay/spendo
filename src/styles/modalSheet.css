@@ -6,7 +6,8 @@
 .modal-sheet__backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.35);
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(8px);
   z-index: var(--modal-backdrop-z);
 }
 
@@ -18,7 +19,7 @@
   z-index: var(--modal-sheet-z);
   display: flex;
   justify-content: center;
-  padding: 20px;
+  padding: 24px 20px 28px;
   pointer-events: none;
 }
 
@@ -26,11 +27,11 @@
   pointer-events: auto;
   width: min(520px, 100%);
   max-height: min(90vh, 720px);
-  border-radius: 24px 24px 18px 18px;
-  background: #f8fafc;
-  padding: 20px 18px 24px;
+  border-radius: 26px;
+  background: #fefeff;
+  padding: 22px 20px 26px;
   display: grid;
   gap: 16px;
-  box-shadow: 0 24px 48px rgba(15, 23, 42, 0.22);
+  box-shadow: 0 35px 60px rgba(15, 23, 42, 0.25);
   overflow: auto;
 }
