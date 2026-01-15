@@ -19,7 +19,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
   }
 
   handleReload = () => {
-    window.location.reload();
+    window.location.assign(import.meta.env.BASE_URL);
   };
 
   render() {
