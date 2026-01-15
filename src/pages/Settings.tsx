@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useExpenseService } from "../services/ExpenseServiceContext";
 import { formatILS } from "../utils/money";
 import "../styles/settings.css";
@@ -7,7 +7,9 @@ const Settings = () => {
   const { settings, clearAll, refresh } = useExpenseService();
   const navigate = useNavigate();
 
-  if (!settings) return null;
+  if (!settings) {
+    return <Navigate to="/onboarding/period" replace />;
+  }
 
   const handleReset = async () => {
     await clearAll();
