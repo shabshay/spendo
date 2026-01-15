@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import type { MouseEvent, PointerEvent } from "react";
 import { motion } from "motion/react";
 import type { Category, Expense } from "../types";
 import { CATEGORY_LABELS, CATEGORY_OPTIONS } from "../constants/categories";
@@ -49,6 +50,14 @@ const ExpenseSheet = ({
   const amountAgorot = useMemo(() => parseILS(amountInput), [amountInput]);
   const isValid = amountAgorot > 0 && category !== "";
 
+  const handleClose = (
+    event: MouseEvent<HTMLButtonElement> | PointerEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+    event.stopPropagation();
+    onClose();
+  };
+
   const handleSubmit = async () => {
     if (!isValid) return;
     await onSubmit({
@@ -71,7 +80,8 @@ const ExpenseSheet = ({
         <h2>{title}</h2>
         <MotionButton
           className="ghost-button expense-sheet__close"
-          onClick={onClose}
+          onClick={handleClose}
+          onPointerDown={handleClose}
           aria-label="Close"
           type="button"
         >
