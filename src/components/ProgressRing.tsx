@@ -28,12 +28,20 @@ const ProgressRing = ({ spentAgorot, budgetAgorot, periodLabel }: ProgressRingPr
     <div className="progress-ring card">
       <div className="progress-ring__chart">
         <svg width="220" height="220">
+          <defs>
+            <linearGradient id="progress-ring-gradient" x1="0" y1="0" x2="220" y2="220">
+              <stop offset="0%" stopColor="#6366f1" />
+              <stop offset="50%" stopColor="#4f46e5" />
+              <stop offset="100%" stopColor="#312e81" />
+            </linearGradient>
+          </defs>
           <circle
             className="progress-ring__bg"
             cx="110"
             cy="110"
             r={radius}
             strokeWidth="18"
+            strokeLinecap="round"
           />
           <motion.circle
             className="progress-ring__value"
@@ -41,6 +49,7 @@ const ProgressRing = ({ spentAgorot, budgetAgorot, periodLabel }: ProgressRingPr
             cy="110"
             r={radius}
             strokeWidth="18"
+            strokeLinecap="round"
             style={ringStyle}
             animate={{ strokeDashoffset }}
             initial={false}

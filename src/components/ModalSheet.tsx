@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from "react";
-import type { ReactNode } from "react";
+import type { MouseEvent, PointerEvent, ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "motion/react";
 import { useMotionPreference } from "../utils/animation";
@@ -30,6 +30,14 @@ const ModalSheet = ({
   const contentRef = useRef<HTMLDivElement | null>(null);
   const previousOverflow = useRef<string | null>(null);
   const wasOpen = useRef(open);
+
+  const handleBackdropClose = (
+    event: MouseEvent<HTMLDivElement> | PointerEvent<HTMLDivElement>
+  ) => {
+    if (closeOnBackdrop && event.target === event.currentTarget) {
+      onClose();
+    }
+  };
 
   useEffect(() => {
     if (!open) return;
@@ -101,9 +109,8 @@ const ModalSheet = ({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={baseTransition}
-          onClick={(event) => {
-            if (closeOnBackdrop && event.target === event.currentTarget) onClose();
-          }}
+          onClick={handleBackdropClose}
+          onPointerDown={handleBackdropClose}
         >
           <motion.div
             className="modal-sheet__container"
